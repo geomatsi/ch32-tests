@@ -24,7 +24,7 @@ SECTIONS
 	} >FLASH AT>FLASH
 
 	.dalign : {
-		_sdata = .;
+		_data_vma = .;
 	} >RAM AT>FLASH
 
 	.data : {
