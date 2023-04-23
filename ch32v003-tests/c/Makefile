@@ -9,8 +9,8 @@ CC = $(CROSS_COMPILE)gcc
 AS = $(CROSS_COMPILE)as
 LD = $(CROSS_COMPILE)ld
 
-ASFLAGS = -march=rv32e
-CCFLAGS = -march=rv32e -mabi=ilp32e -std=c11 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
+ASFLAGS = -march=rv32e_zicsr
+CCFLAGS = -march=rv32e_zicsr -mabi=ilp32e -std=c11 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
 LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 
 VPATH += src
