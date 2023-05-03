@@ -15,19 +15,19 @@ LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 
 VPATH += src
 
-# firmware-test files
+# test1 files
 
-FW_TEST_SRCS := start.c main.c
-FW_TEST_OBJS := $(FW_TEST_SRCS:.c=.o)
-FW_TEST_LDS := ld/flash.ld
+TEST1_SRCS := start.c t1.c
+TEST1_OBJS := $(TEST1_SRCS:.c=.o)
+TEST1_LDS := ld/flash.ld
 
-firmware-test: $(FW_TEST_LDS) $(FW_TEST_OBJS)
+test1: $(TEST1_LDS) $(TEST1_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
 # common
 
-all: firmware-test
+all: test1
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
@@ -36,6 +36,7 @@ all: firmware-test
 	$(CC) $(OPTS) $(CCFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.o firmware-*.*
+	rm -rf *.o
+	rm -rf test*
 
 .PHONY: all run clean
