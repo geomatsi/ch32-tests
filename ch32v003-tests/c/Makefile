@@ -3,6 +3,7 @@
 #
 
 CROSS_COMPILE ?= riscv32-unknown-elf-
+CH32V003EVT ?= /path/to/CH32V003EVT
 
 CP = $(CROSS_COMPILE)objcopy
 CC = $(CROSS_COMPILE)gcc
@@ -10,10 +11,14 @@ AS = $(CROSS_COMPILE)as
 LD = $(CROSS_COMPILE)ld
 
 ASFLAGS = -march=rv32e_zicsr
-CCFLAGS = -march=rv32e_zicsr -mabi=ilp32e -std=c11 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
+CCFLAGS = -march=rv32e_zicsr -mabi=ilp32e -std=gnu99 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
 LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 
-VPATH += src
+CCFLAGS += -Iinclude \
+	   -I$(CH32V003EVT)/EXAM/SRC/Peripheral/inc \
+	   -I$(CH32V003EVT)/EXAM/SRC/Core
+
+VPATH += src $(CH32V003EVT)/EXAM/SRC/Peripheral/src
 
 # test1 files
 
