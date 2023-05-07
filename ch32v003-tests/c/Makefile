@@ -25,9 +25,19 @@ test1: $(TEST1_LDS) $(TEST1_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
+# test2 files
+
+TEST2_SRCS := start.c t2.c
+TEST2_OBJS := $(TEST2_SRCS:.c=.o)
+TEST2_LDS := ld/flash.ld
+
+test2: $(TEST2_LDS) $(TEST2_OBJS)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
 # common
 
-all: test1
+all: test1 test2
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
