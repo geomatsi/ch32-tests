@@ -52,6 +52,17 @@ test3: $(TEST3_LDS) $(TEST3_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
+# test4 files
+
+TEST4_SRCS := start.c t4.c ch32v00x_rcc.c ch32v00x_gpio.c system_ch32v00x.c
+TEST4_OBJS := $(TEST4_SRCS:.c=.o)
+TEST4_LDS := ld/flash.ld
+
+test4: $(TEST4_LDS) $(TEST4_OBJS)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+
 # common
 
 all: test1 test2 test3
