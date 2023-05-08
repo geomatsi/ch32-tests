@@ -14,11 +14,13 @@ ASFLAGS = -march=rv32e_zicsr
 CCFLAGS = -march=rv32e_zicsr -mabi=ilp32e -std=gnu99 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
 LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 
-CCFLAGS += -Iinclude \
+CCFLAGS += -Ievt/include \
 	   -I$(CH32V003EVT)/EXAM/SRC/Peripheral/inc \
 	   -I$(CH32V003EVT)/EXAM/SRC/Core
 
-VPATH += src $(CH32V003EVT)/EXAM/SRC/Peripheral/src
+VPATH += src \
+	 evt/src \
+	 $(CH32V003EVT)/EXAM/SRC/Peripheral/src
 
 # test1 files
 
