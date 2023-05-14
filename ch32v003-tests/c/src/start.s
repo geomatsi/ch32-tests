@@ -143,6 +143,20 @@ handle_reset:
 	addi a0, a0, 4
 	addi a1, a1, 4
 	bltu a1, a2, 1b
+
+2:
+	/* load sram functions section from flash to RAM */
+	la a0, _text_lma
+	la a1, _text_vma
+	la a2, _etext
+	bgeu a1, a2, 2f
+1:
+	lw t0, (a0)
+	sw t0, (a1)
+	addi a0, a0, 4
+	addi a1, a1, 4
+	bltu a1, a2, 1b
+
 2:
 	/* clear bss section */
 	la a0, _sbss
