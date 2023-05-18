@@ -77,9 +77,11 @@ test5: $(TEST5_LDS) $(TEST5_OBJS)
 TEST6_SRCS := start.c t6.c ch32v00x_rcc.c ch32v00x_gpio.c system_ch32v00x.c
 TEST6_OBJS := $(TEST6_SRCS:.c=.o)
 TEST6_LDS := ld/flash.ld
+# suppress warning about RWX SRAM:
+TEST6_LDFLAGS = --no-warn-rwx-segment
 
 test6: $(TEST6_LDS) $(TEST6_OBJS)
-	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(LD) -T$< $(LDFLAGS) $(TEST6_LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
 # common
