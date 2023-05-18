@@ -14,6 +14,8 @@ ASFLAGS = -march=rv32e_zicsr
 CCFLAGS = -march=rv32e_zicsr -mabi=ilp32e -std=gnu99 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
 LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 
+LIBGCC = $(shell $(CC) -march=rv32e -mabi=ilp32e -print-libgcc-file-name)
+
 CCFLAGS += -Ievt/include \
 	   -I$(CH32V003EVT)/EXAM/SRC/Peripheral/inc \
 	   -I$(CH32V003EVT)/EXAM/SRC/Core
@@ -21,6 +23,9 @@ CCFLAGS += -Ievt/include \
 VPATH += src \
 	 evt/src \
 	 $(CH32V003EVT)/EXAM/SRC/Peripheral/src
+
+all:
+	@echo "Examples: test1 .. test7"
 
 # test1 files
 
@@ -84,9 +89,17 @@ test6: $(TEST6_LDS) $(TEST6_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(TEST6_LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
-# common
+# test7 files
 
-all: test1 test2 test3
+TEST7_SRCS := start.c t7.c ch32v00x_rcc.c ch32v00x_usart.c ch32v00x_gpio.c system_ch32v00x.c
+TEST7_OBJS := $(TEST7_SRCS:.c=.o)
+TEST7_LDS := ld/flash.ld
+
+test7: $(TEST7_LDS) $(TEST7_OBJS) $(LIBGCC)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+# common
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
