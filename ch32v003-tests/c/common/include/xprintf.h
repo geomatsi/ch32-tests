@@ -4,7 +4,8 @@
 
 #ifndef XPRINTF_DEF
 #define XPRINTF_DEF
-#include <string.h>
+
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
