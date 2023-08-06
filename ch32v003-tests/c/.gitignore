@@ -1,2 +1,4 @@
 *.o
-test*
+tags
+test*bin
+test*elf

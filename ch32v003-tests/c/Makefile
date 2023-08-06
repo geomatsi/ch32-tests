@@ -17,15 +17,17 @@ LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 LIBGCC = $(shell $(CC) -march=rv32e -mabi=ilp32e -print-libgcc-file-name)
 
 CCFLAGS += -Ievt/include \
+	   -Icommon/include \
 	   -I$(CH32V003EVT)/EXAM/SRC/Peripheral/inc \
 	   -I$(CH32V003EVT)/EXAM/SRC/Core
 
 VPATH += src \
 	 evt/src \
+	 common/src \
 	 $(CH32V003EVT)/EXAM/SRC/Peripheral/src
 
 all:
-	@echo "Examples: test1 .. test7"
+	@echo "Examples: test1 .. test8"
 
 # test1 files
 
@@ -96,6 +98,16 @@ TEST7_OBJS := $(TEST7_SRCS:.c=.o)
 TEST7_LDS := ld/flash.ld
 
 test7: $(TEST7_LDS) $(TEST7_OBJS) $(LIBGCC)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+# test8 files
+
+TEST8_SRCS := start.c t8.c ch32v00x_rcc.c ch32v00x_usart.c ch32v00x_gpio.c system_ch32v00x.c xprintf.c stdlib.c
+TEST8_OBJS := $(TEST8_SRCS:.c=.o)
+TEST8_LDS := ld/flash.ld
+
+test8: $(TEST8_LDS) $(TEST8_OBJS) $(LIBGCC)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
