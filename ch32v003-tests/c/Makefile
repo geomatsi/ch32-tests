@@ -129,8 +129,11 @@ test9: $(TEST9_LDS) $(TEST9_OBJS) $(LIBGCC)
 %.o: %.c
 	$(CC) $(OPTS) $(CCFLAGS) -c $< -o $@
 
+tags:
+	ctags -a -R . $(CH32V003EVT)
+
 clean:
 	rm -rf *.o
 	rm -rf test*
 
-.PHONY: all run clean
+.PHONY: all run clean tags
