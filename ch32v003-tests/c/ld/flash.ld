@@ -50,5 +50,9 @@ SECTIONS
 		_ebss = .;
 	} >RAM AT>RAM
 
-	PROVIDE(__stack_top = ORIGIN(RAM) + LENGTH(RAM));
+	.stack (NOLOAD) : {
+		_sstack = .;
+	} >RAM AT>RAM
+
+	PROVIDE(_estack = ORIGIN(RAM) + LENGTH(RAM));
 }

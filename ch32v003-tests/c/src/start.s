@@ -129,7 +129,7 @@ handle_reset:
 	*/
 
 	/* setup sp and fp */
-	la sp, __stack_top
+	la sp, _estack
 	add s0, sp, zero
 
 	/* load data section from flash to RAM */
@@ -166,6 +166,18 @@ handle_reset:
 	sw zero, (a0)
 	addi a0, a0, 4
 	bltu a0, a1, 1b
+
+2:
+	/* fill stack region with 0xaa canaries */
+	la a0, _sstack
+	la a1, _estack
+	bgeu a0, a1, 2f
+	li t0, 0xaaaaaaaa
+1:
+	sw t0, (a0)
+	addi a0, a0, 4
+	bltu a0, a1, 1b
+
 2:
 	/* set MPIE: enable interrupts after 'mret' to 'main' */
 	li t0, 0x80
