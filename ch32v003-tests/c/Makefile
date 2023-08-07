@@ -27,7 +27,7 @@ VPATH += src \
 	 $(CH32V003EVT)/EXAM/SRC/Peripheral/src
 
 all:
-	@echo "Examples: test1 .. test8"
+	@echo "Examples: test1 .. test9"
 
 # test1 files
 
@@ -108,6 +108,16 @@ TEST8_OBJS := $(TEST8_SRCS:.c=.o)
 TEST8_LDS := ld/flash.ld
 
 test8: $(TEST8_LDS) $(TEST8_OBJS) $(LIBGCC)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+# test9 files
+
+TEST9_SRCS := start.c t9.c ch32v00x_rcc.c ch32v00x_usart.c ch32v00x_gpio.c system_ch32v00x.c xprintf.c stdlib.c
+TEST9_OBJS := $(TEST9_SRCS:.c=.o)
+TEST9_LDS := ld/flash.ld
+
+test9: $(TEST9_LDS) $(TEST9_OBJS) $(LIBGCC)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
