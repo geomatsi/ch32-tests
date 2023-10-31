@@ -1,33 +1,51 @@
 MEMORY
 {
-	FLASH (rx) : ORIGIN = 0x08000000, LENGTH =16K
-	RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 2K
+	FLASH (rx) : ORIGIN = 0x00000000, LENGTH =32K
+	RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 10K
 }
 
 ENTRY(_start)
 
 SECTIONS
 {
-	.text : {
+	.init : {
 		*(.init);
+	} >FLASH AT>FLASH
+
+	.vector : {
+		. = ALIGN(64);
+		*(.vector);
+	} >FLASH AT>FLASH
+
+	.text : {
 		*(.text);
 		*(.text.*);
 	} >FLASH AT>FLASH
+
+	.rom.text : {
+		. = ALIGN(4);
+		_text_lma = .;
+	} >FLASH AT>FLASH
+
+	.ram.text : {
+		_text_vma = .;
+		*(.sram.text);
+		_etext = .;
+	} >RAM AT>FLASH
 
 	.rodata : {
 		*(.rodata);
 		*(.rodata.*);
 	} >FLASH AT>FLASH
 
-	.lalign : {
+	.rom.data : {
+		. = ALIGN(4);
 		_data_lma = .;
 	} >FLASH AT>FLASH
 
-	.dalign : {
-		_sdata = .;
-	} >RAM AT>FLASH
-
-	.data : {
+	.ram.data : {
+		. = ALIGN(4);
+		_data_vma = .;
 		*(.data);
 		*(.data.*);
 		*(.sdata);
@@ -36,10 +54,18 @@ SECTIONS
 	} >RAM AT>FLASH
 
 	.bss (NOLOAD) : {
+		. = ALIGN(4);
 		_sbss = .;
-		*(.bss);
+		*(.bss*);
+		*(.sbss*);
+		*(COMMON);
 		_ebss = .;
 	} >RAM AT>RAM
 
-	PROVIDE(__stack_top = ORIGIN(RAM) + LENGTH(RAM));
+	.stack (NOLOAD) : {
+		. = ALIGN(4);
+		_sstack = .;
+	} >RAM AT>RAM
+
+	PROVIDE(_estack = ORIGIN(RAM) + LENGTH(RAM));
 }

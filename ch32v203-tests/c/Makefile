@@ -3,31 +3,63 @@
 #
 
 CROSS_COMPILE ?= riscv32-unknown-elf-
+CH32V203EVT ?= /path/to/CH32V203EVT
 
 CP = $(CROSS_COMPILE)objcopy
 CC = $(CROSS_COMPILE)gcc
 AS = $(CROSS_COMPILE)as
 LD = $(CROSS_COMPILE)ld
 
-ASFLAGS = -march=rv32imafc -mabi=ilp32f
-CCFLAGS = -march=rv32imafc -mabi=ilp32f -std=c11 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
+ASFLAGS = -march=rv32imac_zicsr
+CCFLAGS = -march=rv32imac_zicsr -mabi=ilp32 -std=gnu99 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
 LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 
-VPATH += src
+# suppress warning about RWX SRAM:
+LDFLAGS += --no-warn-rwx-segment
 
-# firmware-test files
+LIBGCC = $(shell $(CC) -march=rv32 -mabi=ilp32 -print-libgcc-file-name)
 
-FW_TEST_SRCS := start.c main.c
-FW_TEST_OBJS := $(FW_TEST_SRCS:.c=.o)
-FW_TEST_LDS := ld/flash.ld
+CCFLAGS += -Ievt/include \
+	   -Icommon/include \
+	   -I$(CH32V203EVT)/EXAM/SRC/Peripheral/inc \
+	   -I$(CH32V203EVT)/EXAM/SRC/Core
 
-firmware-test: $(FW_TEST_LDS) $(FW_TEST_OBJS)
+VPATH += src \
+	 startup \
+	 evt/src \
+	 common/src \
+	 $(CH32V203EVT)/EXAM/SRC/Peripheral/src
+
+all:
+	@echo "Examples: test1 .. test3"
+
+# test1 files
+
+TEST1_SRCS := start1.c t1.c
+TEST1_OBJS := $(TEST1_SRCS:.c=.o)
+TEST1_LDS := ld/flash.ld
+
+test1: $(TEST1_LDS) $(TEST1_OBJS)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+TEST2_SRCS := start1.c t2.c ch32v20x_rcc.c ch32v20x_gpio.c
+TEST2_OBJS := $(TEST2_SRCS:.c=.o)
+TEST2_LDS := ld/flash.ld
+
+test2: $(TEST2_LDS) $(TEST2_OBJS)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+TEST3_SRCS := start1.c t3.c ch32v20x_rcc.c ch32v20x_gpio.c system_ch32v20x.c
+TEST3_OBJS := $(TEST3_SRCS:.c=.o)
+TEST3_LDS := ld/flash.ld
+
+test3: $(TEST3_LDS) $(TEST3_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
 # common
-
-all: firmware-test
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
@@ -35,7 +67,11 @@ all: firmware-test
 %.o: %.c
 	$(CC) $(OPTS) $(CCFLAGS) -c $< -o $@
 
-clean:
-	rm -rf *.o firmware-*.*
+tags:
+	ctags -a -R . $(CH32V203EVT)
 
-.PHONY: all run clean
+clean:
+	rm -rf *.o
+	rm -rf test*
+
+.PHONY: all run clean tags
