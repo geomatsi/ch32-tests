@@ -31,9 +31,10 @@ VPATH += src \
 	 $(CH32V203EVT)/EXAM/SRC/Peripheral/src
 
 all:
-	@echo "Examples: test1 .. test3"
+	@echo "Examples: test1 .. test4"
 
-# test1 files
+
+# test1: simple test: no-op loop
 
 TEST1_SRCS := start1.c t1.c
 TEST1_OBJS := $(TEST1_SRCS:.c=.o)
@@ -43,6 +44,8 @@ test1: $(TEST1_LDS) $(TEST1_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
+# test2: blink: 'nop' based delay
+
 TEST2_SRCS := start1.c t2.c ch32v20x_rcc.c ch32v20x_gpio.c
 TEST2_OBJS := $(TEST2_SRCS:.c=.o)
 TEST2_LDS := ld/flash.ld
@@ -51,11 +54,23 @@ test2: $(TEST2_LDS) $(TEST2_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
+# test3: blink: systick based delay
+
 TEST3_SRCS := start1.c t3.c ch32v20x_rcc.c ch32v20x_gpio.c system_ch32v20x.c
 TEST3_OBJS := $(TEST3_SRCS:.c=.o)
 TEST3_LDS := ld/flash.ld
 
 test3: $(TEST3_LDS) $(TEST3_OBJS)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+# test4: blink: 'systick' based delay and startup code in C
+
+TEST4_SRCS := start2.c t3.c ch32v20x_rcc.c ch32v20x_gpio.c system_ch32v20x.c
+TEST4_OBJS := $(TEST4_SRCS:.c=.o)
+TEST4_LDS := ld/flash.ld
+
+test4: $(TEST4_LDS) $(TEST4_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
