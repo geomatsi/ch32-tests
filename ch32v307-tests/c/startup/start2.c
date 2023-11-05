@@ -223,6 +223,7 @@ void DMA2_Channel9_IRQHandler(void) __attribute__((weak, alias("blocking_handler
 void DMA2_Channel10_IRQHandler(void) __attribute__((weak, alias("blocking_handler")));
 void DMA2_Channel11_IRQHandler(void) __attribute__((weak, alias("blocking_handler")));
 
+void blocking_handler(void) __attribute((naked));
 void blocking_handler(void)
 {
 	while (1);
