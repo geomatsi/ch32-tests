@@ -31,7 +31,7 @@ VPATH += src \
 	 $(CH32V307EVT)/EXAM/SRC/Peripheral/src
 
 all:
-	@echo "Examples: test1 .. test4"
+	@echo "Examples: test1 .. test6"
 
 
 # test1: simple test: no-op loop
@@ -81,6 +81,16 @@ TEST5_OBJS := $(TEST5_SRCS:.c=.o)
 TEST5_LDS := ld/flash2.ld
 
 test5: $(TEST5_LDS) $(TEST5_OBJS)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
+# test6: blink: 'nop' based delay with a bit of an FPU entourage
+
+TEST6_SRCS := start2.c t6.c ch32v30x_rcc.c ch32v30x_gpio.c
+TEST6_OBJS := $(TEST6_SRCS:.c=.o)
+TEST6_LDS := ld/flash1.ld
+
+test6: $(TEST6_LDS) $(TEST6_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
