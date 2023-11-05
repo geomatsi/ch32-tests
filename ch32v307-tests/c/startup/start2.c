@@ -393,12 +393,10 @@ void reset_handler(void)
 		"csrw	0xbc0, t0\n\t"
 		: : : );
 
-	/* setup MPIE: enable interrupts after 'mret' to main
-	 * - TODO: FPU disabled for now
-	 */
+	/* setup MPIE: enable FPU and enable interrupts after 'mret' to main */
 
 	__asm__ __volatile__(
-		"li	t0, 0x80\n\t"
+		"li	t0, 0x6080\n\t"
 		"csrw	mstatus, t0\n\t"
 		: : : );
 

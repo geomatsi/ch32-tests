@@ -10,14 +10,14 @@ CC = $(CROSS_COMPILE)gcc
 AS = $(CROSS_COMPILE)as
 LD = $(CROSS_COMPILE)ld
 
-ASFLAGS = -march=rv32imac_zicsr
-CCFLAGS = -march=rv32imac_zicsr -mabi=ilp32 -std=gnu99 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
+ASFLAGS = -march=rv32imafc_zicsr -mabi=ilp32f
+CCFLAGS = -march=rv32imafc_zicsr -mabi=ilp32f -std=gnu99 -ffunction-sections -fdata-sections -ffreestanding -Wall -Wextra -Werror -fno-stack-protector
 LDFLAGS = -nostdlib --gc-sections --fatal-warnings
 
 # suppress warning about RWX SRAM:
 LDFLAGS += --no-warn-rwx-segment
 
-LIBGCC = $(shell $(CC) -march=rv32imac -mabi=ilp32 -print-libgcc-file-name)
+LIBGCC = $(shell $(CC) -march=rv32imafc -mabi=ilp32f -print-libgcc-file-name)
 
 CCFLAGS += -Ievt/include \
 	   -Icommon/include \

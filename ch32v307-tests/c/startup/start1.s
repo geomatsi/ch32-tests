@@ -385,10 +385,8 @@ handle_reset:
 	li t0, 0x1f
 	csrw 0xbc0, t0
 
-	/* setup MPIE: enable interrupts after 'mret' to main
-	 * - TODO: FPU disabled for now
-	 */
-	li t0, 0x80
+	/* setup MPIE: enable FPU and enable interrupts after 'mret' to main */
+	li t0, 0x6080
 	csrw mstatus, t0
 
 	/* vendor specific: nable nested and hardware stack */
