@@ -74,6 +74,16 @@ test4: $(TEST4_LDS) $(TEST4_OBJS)
 	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
 	$(CP) -O binary $@.elf $@.bin
 
+# test5: detect stack overflows using pmp
+
+TEST5_SRCS := start2.c t5.c ch32v30x_rcc.c ch32v30x_gpio.c
+TEST5_OBJS := $(TEST5_SRCS:.c=.o)
+TEST5_LDS := ld/flash2.ld
+
+test5: $(TEST5_LDS) $(TEST5_OBJS)
+	$(LD) -T$< $(LDFLAGS) $(filter-out $<, $^) -o $@.elf
+	$(CP) -O binary $@.elf $@.bin
+
 # common
 
 %.o: %.s
